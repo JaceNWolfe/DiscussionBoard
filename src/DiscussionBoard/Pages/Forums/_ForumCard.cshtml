@@ -1,0 +1,7 @@
+@model DiscussionBoard.Models.Forum
+<article class="card mb-3">
+    <div class="card-body">
+        <h2 class="h5"><a asp-page="/Forums/Details" asp-route-id="@Model.Id">@Model.Name</a></h2>
+        <p>@Model.Description</p>
+    </div>
+</article>
