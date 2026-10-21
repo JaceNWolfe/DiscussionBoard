@@ -1,0 +1,28 @@
+﻿@page "/Forum/{id:int}"
+@model DiscussionBoard.Pages.Forums.DetailsModel
+
+@{
+    ViewData["Title"] = Model.Forum?.Name ?? "Forum Details";
+}
+
+<h1>@Model.Forum?.Name</h1>
+
+<p>@Model.Forum?.Description</p>
+
+<hr />
+
+<h2>Discussion Threads</h2>
+
+@if (Model.Threads.Count == 0)
+{
+    <p>No threads have been created in this forum yet.</p>
+}
+else
+{
+    foreach (var thread in Model.Threads)
+    {
+        <partial name="_ThreadCard" model="thread" />
+    }
+}
+
+<a asp-page="/Forums/Index">Back to Forums</a>

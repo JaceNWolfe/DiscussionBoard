@@ -1,0 +1,13 @@
+﻿@model DiscussionBoard.Models.DiscussionThread
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Title</h5>
+
+        <p class="card-text">@Model.Content</p>
+
+        <small class="text-muted">
+            Created: @Model.CreatedAt.ToLocalTime().ToString("g")
+        </small>
+    </div>
+</div>

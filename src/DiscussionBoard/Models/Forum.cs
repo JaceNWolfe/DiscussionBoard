@@ -6,11 +6,11 @@ namespace DiscussionBoard.Models
     public class Forum : EntityBase
     {
         [Required]
-        [StringLength(100)]
+        [MaxLength(100)]
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        [StringLength(1000)]
+        [MaxLength(1000)]
         public string Description { get; set; } = string.Empty;
 
         public ICollection<DiscussionThread> DiscussionThreads { get; set; }

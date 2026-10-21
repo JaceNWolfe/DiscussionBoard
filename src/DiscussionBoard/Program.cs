@@ -40,9 +40,12 @@ namespace DiscussionBoard
 
             builder.Services.AddRazorPages();
 
-            builder.Services.AddSingleton<ILogReader, JsonLogReader>();
+            builder.Services.AddScoped<DiscussionThreadService>();
 
             builder.Services.AddScoped<ForumService>();
+
+            builder.Services.AddSingleton<ILogReader, JsonLogReader>();
+
 
             var app = builder.Build();
 

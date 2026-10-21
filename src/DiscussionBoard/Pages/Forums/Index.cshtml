@@ -5,4 +5,8 @@
 @foreach (var forum in Model.Items)
 {
     <partial name="/Pages/Forums/_ForumCard.cshtml" model="forum" />
+
+    <a asp-page="/Forums/Details" asp-route-id="@forum.Id">
+        View Threads
+    </a>
 }
