@@ -1,7 +1,12 @@
-﻿namespace DiscussionBoard.Models
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace DiscussionBoard.Models
 {
-    public class EntityBase
+    public abstract class EntityBase
     {
-        
+        public int Id { get; set; }
+
+        public bool IsDeleted { get; set; } = false;
     }
 }

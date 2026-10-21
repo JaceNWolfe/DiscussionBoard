@@ -42,6 +42,8 @@ namespace DiscussionBoard
 
             builder.Services.AddSingleton<ILogReader, JsonLogReader>();
 
+            builder.Services.AddScoped<ForumService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
