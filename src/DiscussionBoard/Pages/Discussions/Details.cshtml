@@ -1,0 +1,79 @@
+﻿@page "/Discussion/{threadId:int}"
+@model DiscussionBoard.Pages.Discussions.Details
+
+@{
+    ViewData["Title"] = Model.Thread?.Title ?? "Discussion";
+}
+
+@if (Model.Thread != null)
+{
+    <h1>@Model.Thread.Title</h1>
+
+    <p>@Model.Thread.Content</p>
+
+    <small class="text-muted">
+        Created: @Model.Thread.CreatedAt.ToLocalTime().ToString("g")
+    </small>
+
+    <hr />
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <h2>Reply to Discussion</h2>
+
+        <form method="post"
+              asp-page-handler="Reply"
+              asp-route-threadId="@Model.Thread.Id">
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <input type="hidden" name="Input.ParentPostId" value="" />
+
+            <div class="mb-3">
+                <label asp-for="Input.Content" class="form-label">
+                    Your reply
+                </label>
+
+                <textarea asp-for="Input.Content"
+                          class="form-control"
+                          rows="4"
+                          required
+                          maxlength="10000"></textarea>
+
+                <span asp-validation-for="Input.Content"
+                      class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Post Reply
+            </button>
+        </form>
+
+        <hr />
+    }
+
+    <h2>Posts and Replies</h2>
+
+    @if (Model.RootPosts.Count == 0)
+    {
+        <p>No replies yet. Start the conversation!</p>
+    }
+    else
+    {
+        foreach (var node in Model.RootPosts)
+        {
+            <partial name="/Pages/Discussions/_PostTree.cshtml"
+                     model="node" />
+        }
+    }
+
+    <a asp-page="/Forums/Details"
+       asp-route-id="@Model.Thread.ForumId"
+       class="btn btn-secondary mt-3">
+        Back to Forum
+    </a>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

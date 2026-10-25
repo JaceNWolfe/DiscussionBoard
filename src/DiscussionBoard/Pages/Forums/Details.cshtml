@@ -1,4 +1,4 @@
-﻿@page "/Forum/{id:int}"
+﻿@page "/Forum/{id:int?}"
 @model DiscussionBoard.Pages.Forums.DetailsModel
 
 @{
@@ -24,5 +24,11 @@ else
         <partial name="_ThreadCard" model="thread" />
     }
 }
+
+<a asp-page="/Discussions/Create"
+   asp-route-forumId="@Model.Forum.Id"
+   class="btn btn-primary">
+    Create Discussion
+</a>
 
 <a asp-page="/Forums/Index">Back to Forums</a>

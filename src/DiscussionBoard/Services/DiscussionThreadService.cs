@@ -1,6 +1,7 @@
 ﻿using DiscussionBoard.Data;
 using DiscussionBoard.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DiscussionBoard.Services
 {
@@ -8,6 +9,14 @@ namespace DiscussionBoard.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<DiscussionThreadService> _logger;
+
+        public DiscussionThreadService(ApplicationDbContext context)
+        {
+            _context = context;
+            _logger =
+                Microsoft.Extensions.Logging.Abstractions
+                    .NullLogger<DiscussionThreadService>.Instance;
+        }
 
         public DiscussionThreadService(
             ApplicationDbContext context,
@@ -29,7 +38,6 @@ namespace DiscussionBoard.Services
             return await _context.DiscussionThreads
                 .AsNoTracking()
                 .Where(t => t.ForumId == forumId && !t.IsDeleted)
-                .OrderByDescending(t => t.CreatedAt)
                 .ToListAsync();
         }
 
@@ -44,7 +52,7 @@ namespace DiscussionBoard.Services
             {
                 _logger.LogError(
                     ex,
-                    "Database error while adding discussion thread.");
+                    "Failed to add discussion thread.");
                 throw;
             }
         }
@@ -60,10 +68,9 @@ namespace DiscussionBoard.Services
                 if (existingThread == null)
                 {
                     throw new KeyNotFoundException(
-                        $"Discussion thread with ID {thread.Id} was not found.");
+                        $"Discussion thread {thread.Id} was not found.");
                 }
 
-                // Only update fields the user is allowed to change.
                 existingThread.Title = thread.Title;
                 existingThread.Content = thread.Content;
 
@@ -73,7 +80,7 @@ namespace DiscussionBoard.Services
             {
                 _logger.LogError(
                     ex,
-                    "Database error while updating discussion thread {ThreadId}.",
+                    "Failed to update discussion thread {ThreadId}.",
                     thread.Id);
                 throw;
             }

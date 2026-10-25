@@ -9,5 +9,10 @@
         <small class="text-muted">
             Created: @Model.CreatedAt.ToLocalTime().ToString("g")
         </small>
+        <a asp-page="/Discussions/Edit"
+           asp-route-id="@Model.Id"
+           class="btn btn-secondary">
+            Edit
+        </a>
     </div>
 </div>

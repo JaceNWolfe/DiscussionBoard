@@ -1,0 +1,27 @@
+﻿@model DiscussionBoard.Services.PostTreeBuilder.Node
+<article class="border rounded p-3 mb-3" aria-label="Post" data-post-id="@Model.Post.Id">
+    <p class="mb-1">@Model.Post.Content</p>
+    <small class="text-muted">@Model.Post.ApplicationUser?.UserName — @Model.Post.CreatedAt.ToLocalTime().ToString("g")</small>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <details class="mt-2">
+            <summary class="btn btn-sm btn-outline-primary">Reply to this post</summary>
+            <form method="post" asp-page-handler="Reply" asp-route-threadId="@Model.Post.DiscussionThreadId" class="mt-2">
+                <input type="hidden" name="Input.ParentPostId" value="@Model.Post.Id" />
+                <label for="reply-@Model.Post.Id">Your reply</label>
+                <textarea id="reply-@Model.Post.Id" name="Input.Content" class="form-control" required maxlength="10000"></textarea>
+                <button type="submit" class="btn btn-primary btn-sm mt-2">Post reply</button>
+            </form>
+        </details>
+    }
+    @* This recursively displays the replies to build the visual hierarchy *@
+    @if (Model.Replies.Count > 0)
+    {
+        <div class="ms-4 mt-3 ps-3 border-start border-3" aria-label="Replies to this post">
+            @foreach (var reply in Model.Replies)
+            {
+                <partial name="/Pages/Discussions/_PostTree.cshtml" model="reply" />
+            }
+        </div>
+    }
+</article>
