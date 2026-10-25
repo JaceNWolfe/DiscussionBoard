@@ -1,4 +1,5 @@
-﻿@page "/Discussion/{threadId:int}"
+﻿
+@page "/Discussion/{threadId:int}"
 @model DiscussionBoard.Pages.Discussions.Details
 
 @{
@@ -8,11 +9,11 @@
 @if (Model.Thread != null)
 {
     <h1>@Model.Thread.Title</h1>
-
     <p>@Model.Thread.Content</p>
 
     <small class="text-muted">
-        Created: @Model.Thread.CreatedAt.ToLocalTime().ToString("g")
+        Started by @Model.Thread.ApplicationUser?.UserName —
+        @Model.Thread.CreatedAt.ToLocalTime().ToString("g")
     </small>
 
     <hr />
@@ -25,14 +26,16 @@
               asp-page-handler="Reply"
               asp-route-threadId="@Model.Thread.Id">
 
-            <div asp-validation-summary="All" class="text-danger"></div>
+            <div asp-validation-summary="All"
+                 class="text-danger"></div>
 
-            <input type="hidden" name="Input.ParentPostId" value="" />
+            <input type="hidden"
+                   name="Input.ParentPostId"
+                   value="" />
 
             <div class="mb-3">
-                <label asp-for="Input.Content" class="form-label">
-                    Your reply
-                </label>
+                <label asp-for="Input.Content"
+                       class="form-label">Your reply</label>
 
                 <textarea asp-for="Input.Content"
                           class="form-control"
@@ -51,6 +54,11 @@
 
         <hr />
     }
+    else
+    {
+        <p><a asp-area="Identity" asp-page="/Account/Login">
+            Sign in</a> to reply to this discussion.</p>
+    }
 
     <h2>Posts and Replies</h2>
 
@@ -60,7 +68,7 @@
     }
     else
     {
-        foreach (var node in Model.RootPosts)
+        @foreach (var node in Model.RootPosts)
         {
             <partial name="/Pages/Discussions/_PostTree.cshtml"
                      model="node" />

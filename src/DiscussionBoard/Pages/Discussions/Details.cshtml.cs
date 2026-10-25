@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using DiscussionBoard.Data;
 using DiscussionBoard.Models;
@@ -25,9 +26,9 @@ public class Details : PageModel
         _postService = postService;
     }
 
-    public DiscussionThread? Thread { get; set; }
+    public DiscussionThread? Thread { get; private set; }
 
-    public List<PostTreeBuilder.Node> RootPosts { get; set; } = new();
+    public List<PostTreeBuilder.Node> RootPosts { get; private set; } = new();
 
     [BindProperty]
     public ReplyInput Input { get; set; } = new();
@@ -35,7 +36,7 @@ public class Details : PageModel
     public class ReplyInput
     {
         [Required]
-        [MaxLength(10000)]
+        [StringLength(10000)]
         public string Content { get; set; } = string.Empty;
 
         public int? ParentPostId { get; set; }
@@ -44,29 +45,21 @@ public class Details : PageModel
     public async Task<IActionResult> OnGetAsync(int threadId)
     {
         if (!await LoadDiscussionAsync(threadId))
-        {
             return NotFound();
-        }
 
         return Page();
     }
 
     public async Task<IActionResult> OnPostReplyAsync(int threadId)
     {
-        if (!User.Identity?.IsAuthenticated ?? true)
-        {
+        if (User.Identity?.IsAuthenticated != true)
             return Challenge();
-        }
 
         if (!await LoadDiscussionAsync(threadId))
-        {
             return NotFound();
-        }
 
         if (!ModelState.IsValid)
-        {
             return Page();
-        }
 
         if (Input.ParentPostId.HasValue)
         {
@@ -79,18 +72,17 @@ public class Details : PageModel
             {
                 ModelState.AddModelError(
                     nameof(Input.ParentPostId),
-                    "The selected parent post does not belong to this discussion.");
+                    "The selected post does not belong to this discussion.");
 
                 return Page();
             }
         }
 
-        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? userId =
+            User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (string.IsNullOrWhiteSpace(userId))
-        {
             return Challenge();
-        }
 
         var post = new Post
         {
@@ -125,12 +117,11 @@ public class Details : PageModel
         Thread = await _threadService.GetAsync(threadId);
 
         if (Thread == null)
-        {
             return false;
-        }
 
         var posts = await _postService.GetForThreadAsync(threadId);
 
+        // Build the hierarchy using the instructor-provided class.
         RootPosts = PostTreeBuilder.Build(posts);
 
         return true;
