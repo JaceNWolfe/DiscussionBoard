@@ -1,0 +1,29 @@
+name: Authentication Repository Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lesson-01:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore tools
+        run: dotnet tool restore
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build
+
+      - name: Test Repository Setup
+        run: dotnet test --no-build --filter FullyQualifiedName~DiscussionBoard.Tests.Authentication

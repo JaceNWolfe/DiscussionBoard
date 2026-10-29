@@ -8,17 +8,18 @@ You will fork this repository into your own GitHub account and use your fork thr
 
 ## Current Project Status
 
-| Lesson | Status |
-| --- | --- |
-| Starter Project | ![Starter Project Tests](../../actions/workflows/starter-tests.yml/badge.svg) |
-| Database Integration and Initial UI | ![Database and UI Tests](../../actions/workflows/database-ui.yml/badge.svg) |
+| Lesson                                                                                                                                                                | Status                                                                                                                                 |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| Starter Project                                                                                                                                                       | ![Starter Project Tests](../../actions/workflows/starter-tests.yml/badge.svg)                                                          |
+| Database Integration and Initial UI                                                                                                                                   | ![Database and UI Tests](../../actions/workflows/database-ui.yml/badge.svg)                                                            |
+| Authentication  | [![Authentication Tests](../../actions/workflows/authentication.yml/badge.svg)](../../actions/workflows/assignment-authentication.yml) |
 
 Each badge shows the current status of the automated tests for that stage of the project. A new lesson's badge should initially be failing; it should become green as you complete that lesson's requirements.
 
 ## Project Environment
 
 - .NET 10
-- Rider-friendly repository 
+- Rider-friendly repository
 - Shared MSBuild settings in `Directory.Build.props`
 - Local .NET tools in `.config/dotnet-tools.json`
 - xUnit.net v3-generation tests using the 4.x package line and Microsoft Testing Platform v2
