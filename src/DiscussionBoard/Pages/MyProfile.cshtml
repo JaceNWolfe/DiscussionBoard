@@ -1,0 +1,76 @@
+﻿@page
+@model DiscussionBoard.Pages.MyProfile
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<h1>My Profile</h1>
+
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    <div class="alert alert-success">
+        @Model.StatusMessage
+    </div>
+}
+
+<h3>Current Avatar</h3>
+
+<img src="@Model.CurrentAvatarPath"
+     alt="Your current avatar"
+     width="100"
+     height="100" />
+
+<form method="post">
+
+    <div class="mb-3">
+        <label asp-for="Input.DisplayName" class="form-label">
+            Display Name
+        </label>
+
+        <input asp-for="Input.DisplayName" class="form-control" />
+
+        <span asp-validation-for="Input.DisplayName"
+              class="text-danger"></span>
+    </div>
+
+    <fieldset class="mb-3">
+        <legend>Choose an Avatar</legend>
+
+        <span asp-validation-for="Input.AvatarId"
+              class="text-danger"></span>
+
+        @foreach (var avatar in Model.AvatarOptions)
+        {
+            <div class="form-check mb-2">
+                <label class="form-check-label">
+
+                    <input type="radio"
+                           asp-for="Input.AvatarId"
+                           value="@avatar.Id"
+                           class="form-check-input" />
+
+                    <img src="@DiscussionBoard.Services.AvatarCatalog.ImagePath(avatar.Id)"
+                         alt="@avatar.DisplayName avatar preview"
+                         width="60"
+                         height="60" />
+
+                    @avatar.DisplayName
+
+                </label>
+            </div>
+        }
+    </fieldset>
+
+    <button type="submit" class="btn btn-primary">
+        Save Profile
+    </button>
+
+    <div asp-validation-summary="ModelOnly"
+         class="text-danger"></div>
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

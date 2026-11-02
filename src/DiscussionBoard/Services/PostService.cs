@@ -30,6 +30,7 @@ namespace DiscussionBoard.Services
         {
             return await _context.Posts
                 .AsNoTracking()
+                .Include(p => p.ApplicationUser)
                 .Where(p =>
                     p.DiscussionThreadId == threadId &&
                     !p.IsDeleted)

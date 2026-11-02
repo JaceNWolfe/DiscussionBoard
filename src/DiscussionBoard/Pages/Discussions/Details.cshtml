@@ -1,5 +1,6 @@
 ﻿
 @page "/Discussion/{threadId:int}"
+@using DiscussionBoard.Services
 @model DiscussionBoard.Pages.Discussions.Details
 
 @{
@@ -12,8 +13,26 @@
     <p>@Model.Thread.Content</p>
 
     <small class="text-muted">
-        Started by @Model.Thread.ApplicationUser?.UserName —
-        @Model.Thread.CreatedAt.ToLocalTime().ToString("g")
+        @{
+            var displayName = string.IsNullOrWhiteSpace(Model.Thread.ApplicationUser?.DisplayName)
+                ? "Unconfigured User"
+                : Model.Thread.ApplicationUser.DisplayName;
+
+            var avatarPath = AvatarCatalog.ImagePath(Model.Thread.ApplicationUser?.AvatarId);
+        }
+
+        <div class="d-flex align-items-center gap-2">
+            <img src="@avatarPath"
+                 alt="@($"{displayName}'s avatar")"
+                 width="40"
+                 height="40"
+                 class="rounded-circle" />
+
+            <small class="text-muted">
+                Started by @displayName —
+                @Model.Thread.CreatedAt.ToLocalTime().ToString("g")
+            </small>
+        </div>
     </small>
 
     <hr />

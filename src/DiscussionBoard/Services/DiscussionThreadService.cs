@@ -30,6 +30,7 @@ namespace DiscussionBoard.Services
         {
             return await _context.DiscussionThreads
                 .AsNoTracking()
+                .Include(t => t.ApplicationUser)
                 .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
         }
 
@@ -37,6 +38,7 @@ namespace DiscussionBoard.Services
         {
             return await _context.DiscussionThreads
                 .AsNoTracking()
+                .Include(t => t.ApplicationUser)
                 .Where(t => t.ForumId == forumId && !t.IsDeleted)
                 .ToListAsync();
         }

@@ -1,6 +1,15 @@
 ﻿@model DiscussionBoard.Models.DiscussionThread
+@using DiscussionBoard.Services
 
-<div class="card mb-3">
+@{
+    var displayName = string.IsNullOrWhiteSpace(Model.ApplicationUser?.DisplayName)
+        ? "Unconfigured User"
+        : Model.ApplicationUser.DisplayName;
+
+    var avatarPath = AvatarCatalog.ImagePath(Model.ApplicationUser?.AvatarId);
+}
+
+<article class="card mb-3">
     <div class="card-body">
         <h5 class="card-title">
             <a asp-page="/Discussions/Details"
@@ -10,6 +19,15 @@
         </h5>
 
         <p class="card-text">@Model.Content</p>
+
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <img src="@avatarPath"
+                 alt="@($"{displayName}'s avatar")"
+                 width="40"
+                 height="40"
+                 class="rounded-circle" />
+            <span>@displayName</span>
+        </div>
 
         <small class="text-muted">
             Created: @Model.CreatedAt.ToLocalTime().ToString("g")
@@ -34,4 +52,4 @@
             }
         </div>
     </div>
-</div>
+</article>
