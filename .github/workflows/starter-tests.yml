@@ -26,4 +26,4 @@ jobs:
         run: dotnet build
 
       - name: Test Repository Setup
-        run: dotnet test --no-build --filter DiscussionBoard.Tests.Starter
+        run: dotnet test --project tests/DiscussionBoard.Tests/DiscussionBoard.Tests.csproj --no-build --filter DiscussionBoard.Tests.Starter

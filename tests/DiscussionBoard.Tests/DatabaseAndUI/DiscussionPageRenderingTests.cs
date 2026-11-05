@@ -2,6 +2,8 @@ using AngleSharp.Dom;
 using AngleSharp.Html.Parser;
 using DiscussionBoard.Data;
 using DiscussionBoard.Models;
+using DiscussionBoard.Tests.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
@@ -120,6 +122,11 @@ namespace DiscussionBoard.Tests.DatabaseAndUI
                 builder.UseEnvironment("Testing");
                 builder.ConfigureServices(services =>
                 {
+                    services.AddAuthentication()
+                        .AddScheme<AuthenticationSchemeOptions, TestUserAuthenticationHandler>(
+                            TestUserAuthenticationHandler.Scheme, _ => { });
+                    services.PostConfigure<AuthenticationOptions>(options =>
+                        options.DefaultAuthenticateScheme = TestUserAuthenticationHandler.Scheme);
                     services.RemoveAll<DbContextOptions<ApplicationDbContext>>();
                     services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connection));
                 });

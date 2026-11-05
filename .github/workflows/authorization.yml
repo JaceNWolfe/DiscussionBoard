@@ -1,0 +1,20 @@
+name: Authorization Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  authorization:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Restore
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Run complete test suite
+        run: dotnet test --project tests/DiscussionBoard.Tests/DiscussionBoard.Tests.csproj --no-build --filter FullyQualifiedName~DiscussionBoard.Tests.Authorization
