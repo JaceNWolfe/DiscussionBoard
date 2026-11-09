@@ -1,6 +1,7 @@
 using DiscussionBoard.Authorization;
 using DiscussionBoard.Pages;
 using DiscussionBoard.Pages.Admin;
+using DiscussionBoard.Pages.Discussions;
 using Microsoft.AspNetCore.Authorization;
 
 namespace DiscussionBoard.Tests.Authorization;

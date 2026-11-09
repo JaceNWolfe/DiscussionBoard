@@ -9,7 +9,19 @@
 
 @if (Model.Thread != null)
 {
-    <h1>@Model.Thread.Title</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>@Model.Thread.Title</h1>
+
+        @if (Model.CanEditThread)
+        {
+            <a asp-page="/Discussions/Edit"
+               asp-route-id="@Model.Thread.Id"
+               class="btn btn-outline-primary">
+                Edit Discussion
+            </a>
+        }
+    </div>
+
     <p>@Model.Thread.Content</p>
 
     <small class="text-muted">

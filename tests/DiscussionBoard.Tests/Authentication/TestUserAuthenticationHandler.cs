@@ -11,6 +11,7 @@ public sealed class TestUserAuthenticationHandler : AuthenticationHandler<Authen
 {
     public const string Scheme = "IntegrationTestUser";
     public const string UserHeader = "X-Integration-Test-User-Id";
+    public const string RoleHeader = "X-Integration-Test-Role";
 
     public TestUserAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
         ILoggerFactory logger, UrlEncoder encoder) : base(options, logger, encoder) { }
@@ -22,11 +23,19 @@ public sealed class TestUserAuthenticationHandler : AuthenticationHandler<Authen
             return Task.FromResult(AuthenticateResult.NoResult());
 
         var id = userIds.ToString();
-        var identity = new ClaimsIdentity(new[]
+        var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, id),
             new Claim(ClaimTypes.Name, id)
-        }, Scheme);
+        };
+
+        if (Request.Headers.TryGetValue(RoleHeader, out var role))
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
+        }
+
+        var identity = new ClaimsIdentity(claims, Scheme);
+
         return Task.FromResult(AuthenticateResult.Success(
             new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme)));
     }

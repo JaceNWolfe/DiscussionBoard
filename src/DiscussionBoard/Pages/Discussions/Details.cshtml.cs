@@ -1,6 +1,7 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using DiscussionBoard.Authorization;
 using DiscussionBoard.Data;
 using DiscussionBoard.Models;
 using DiscussionBoard.Services;
@@ -15,16 +16,21 @@ public class Details : PageModel
     private readonly ApplicationDbContext _context;
     private readonly DiscussionThreadService _threadService;
     private readonly PostService _postService;
+    private readonly IApplicationAuthorizationService _authorizationService;
 
     public Details(
         ApplicationDbContext context,
         DiscussionThreadService threadService,
-        PostService postService)
+        PostService postService,
+        IApplicationAuthorizationService authorizationService)
     {
         _context = context;
         _threadService = threadService;
         _postService = postService;
+        _authorizationService = authorizationService;
     }
+
+    public bool CanEditThread { get; private set; }
 
     public DiscussionThread? Thread { get; private set; }
 
@@ -118,6 +124,8 @@ public class Details : PageModel
 
         if (Thread == null)
             return false;
+
+        CanEditThread = await _authorizationService.CanEditAsync(User, Thread);
 
         var posts = await _postService.GetForThreadAsync(threadId);
 

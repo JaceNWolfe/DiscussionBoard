@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
+﻿using DiscussionBoard.Authorization;
+using DiscussionBoard.Models;
 using DiscussionBoard.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,28 +9,22 @@ using Microsoft.EntityFrameworkCore;
 namespace DiscussionBoard.Pages.Discussions;
 
 [Authorize]
-public class Edit : PageModel
+public class ThreadEditModel : PageModel
 {
+    public int ForumId { get; private set; }
     private readonly DiscussionThreadService _threadService;
+    private readonly IApplicationAuthorizationService _authorizationService;
 
-    public Edit(DiscussionThreadService threadService)
+    public ThreadEditModel(
+        DiscussionThreadService threadService,
+        IApplicationAuthorizationService authorizationService)
     {
         _threadService = threadService;
+        _authorizationService = authorizationService;
     }
 
     [BindProperty]
-    public InputModel Input { get; set; } = new();
-
-    public class InputModel
-    {
-        [Required]
-        [MaxLength(200)]
-        public string Title { get; set; } = string.Empty;
-
-        [Required]
-        [MaxLength(10000)]
-        public string Content { get; set; } = string.Empty;
-    }
+    public DiscussionEditViewModel Input { get; set; } = new();
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
@@ -39,12 +33,12 @@ public class Edit : PageModel
         if (thread == null)
             return NotFound();
 
-        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (thread.ApplicationUserId != userId)
+        if (!await _authorizationService.CanEditAsync(User, thread))
             return Forbid();
 
-        Input = new InputModel
+        ForumId = thread.ForumId;
+
+        Input = new DiscussionEditViewModel
         {
             Title = thread.Title,
             Content = thread.Content
@@ -55,20 +49,19 @@ public class Edit : PageModel
 
     public async Task<IActionResult> OnPostAsync(int id)
     {
-        if (!ModelState.IsValid)
-            return Page();
-
         var thread = await _threadService.GetAsync(id);
 
         if (thread == null)
             return NotFound();
 
-        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (thread.ApplicationUserId != userId)
+        if (!await _authorizationService.CanEditAsync(User, thread))
             return Forbid();
 
-        // Only the permitted values onto the existing thread.
+        ForumId = thread.ForumId;
+
+        if (!ModelState.IsValid)
+            return Page();
+
         thread.Title = Input.Title;
         thread.Content = Input.Content;
 

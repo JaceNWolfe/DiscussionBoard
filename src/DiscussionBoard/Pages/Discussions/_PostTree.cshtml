@@ -1,6 +1,15 @@
 ﻿@using DiscussionBoard.Services
 @model DiscussionBoard.Services.PostTreeBuilder.Node
+@using DiscussionBoard.Authorization
+@inject IApplicationAuthorizationService AuthorizationService
+
 <article class="border rounded p-3 mb-3" aria-label="Post" data-post-id="@Model.Post.Id">
+
+    @{
+        var canEdit = await AuthorizationService.CanEditAsync(
+            User, Model.Post);
+    }
+
     <p class="mb-1">@Model.Post.Content</p>
     @{
         var displayName = string.IsNullOrWhiteSpace(Model.Post.ApplicationUser?.DisplayName)
@@ -9,13 +18,22 @@
 
         var avatarPath = AvatarCatalog.ImagePath(Model.Post.ApplicationUser?.AvatarId);
     }
+    @if (canEdit)
+    {
+        <a asp-page="/Discussions/EditPostModel"
+           asp-route-threadId="@Model.Post.DiscussionThreadId"
+           asp-route-postId="@Model.Post.Id"
+           class="btn btn-sm btn-outline-primary">
+            Edit Post
+        </a>
+    }
 
     <div class="d-flex align-items-center gap-2 mt-2">
         <img src="@avatarPath"
              alt="@($"{displayName}'s avatar")"
              width="32"
              height="32"
-             class="rounded-circle" />
+             class="rounded-circle"/>
 
         <small class="text-muted">
             @displayName — @Model.Post.CreatedAt.ToLocalTime().ToString("g")
@@ -26,7 +44,7 @@
         <details class="mt-2">
             <summary class="btn btn-sm btn-outline-primary">Reply to this post</summary>
             <form method="post" asp-page-handler="Reply" asp-route-threadId="@Model.Post.DiscussionThreadId" class="mt-2">
-                <input type="hidden" name="Input.ParentPostId" value="@Model.Post.Id" />
+                <input type="hidden" name="Input.ParentPostId" value="@Model.Post.Id"/>
                 <label for="reply-@Model.Post.Id">Your reply</label>
                 <textarea id="reply-@Model.Post.Id" name="Input.Content" class="form-control" required maxlength="10000"></textarea>
                 <button type="submit" class="btn btn-primary btn-sm mt-2">Post reply</button>
@@ -39,7 +57,7 @@
         <div class="ms-4 mt-3 ps-3 border-start border-3" aria-label="Replies to this post">
             @foreach (var reply in Model.Replies)
             {
-                <partial name="/Pages/Discussions/_PostTree.cshtml" model="reply" />
+                <partial name="/Pages/Discussions/_PostTree.cshtml" model="reply"/>
             }
         </div>
     }

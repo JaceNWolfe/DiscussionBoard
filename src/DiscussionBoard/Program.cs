@@ -1,8 +1,10 @@
+using DiscussionBoard.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DiscussionBoard.Data;
 using DiscussionBoard.Models;
 using DiscussionBoard.Services;
+using Microsoft.AspNetCore.Authorization;
 using Serilog;
 using Serilog.Formatting.Compact;
 
@@ -36,6 +38,7 @@ namespace DiscussionBoard
 
             builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
                     options.SignIn.RequireConfirmedAccount = !builder.Environment.IsDevelopment())
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddRazorPages(options =>
@@ -45,20 +48,36 @@ namespace DiscussionBoard
                     options.Conventions.AuthorizeFolder("/Forums");
                     options.Conventions.AuthorizeFolder("/Discussions");
                     options.Conventions.AuthorizePage("/MyProfile");
+
                 }
+                options.Conventions.AddPageRoute(
+                    "/Discussions/Create",
+                    "/Thread/Create/{forumId:int}");
 
                 options.Conventions.AddPageRoute("/Forums/Index", "/Forums");
             });
+
+            builder.Services.AddScoped<IApplicationAuthorizationService, ApplicationAuthorizationService>();
 
             builder.Services.AddScoped<DiscussionThreadService>();
 
             builder.Services.AddScoped<ForumService>();
 
-            builder.Services.AddScoped<IUserProfileService, UserProfileService>();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy(
+                    ApplicationAuthorizationPolicies.IsOwnerOrAdmin,
+                    policy => policy.Requirements.Add(
+                        new IsOwnerOrAdminRequirement()));
+            });
+
+            builder.Services.AddScoped< IAuthorizationHandler, IsOwnerOrAdminHandler>();
 
             builder.Services.AddSingleton<ILogReader, JsonLogReader>();
 
             builder.Services.AddScoped<PostService>();
+
+            builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 
 
             var app = builder.Build();
@@ -88,6 +107,7 @@ namespace DiscussionBoard
 
             app.MapRazorPages()
                 .WithStaticAssets();
+
 
             app.Run();
         }
