@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\RiderProjects\\DiscussionBoard\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{596A72DE-D96A-123E-F01E-361AE79108D6}|src\\DiscussionBoard\\DiscussionBoard.csproj|c:\\riderprojects\\discussionboard\\src\\discussionboard\\discussionboard.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{596A72DE-D96A-123E-F01E-361AE79108D6}|src\\DiscussionBoard\\DiscussionBoard.csproj|solutionrelative:src\\discussionboard\\discussionboard.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DiscussionBoard",
+              "DocumentMoniker": "C:\\RiderProjects\\DiscussionBoard\\src\\DiscussionBoard\\DiscussionBoard.csproj",
+              "RelativeDocumentMoniker": "src\\DiscussionBoard\\DiscussionBoard.csproj",
+              "ToolTip": "C:\\RiderProjects\\DiscussionBoard\\src\\DiscussionBoard\\DiscussionBoard.csproj",
+              "RelativeToolTip": "src\\DiscussionBoard\\DiscussionBoard.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-11-14T04:24:06.401Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

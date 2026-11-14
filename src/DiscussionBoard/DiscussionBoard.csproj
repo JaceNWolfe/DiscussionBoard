@@ -16,6 +16,10 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.12" />
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
         <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+
+        <!-- Security updates for vulnerable transitive dependencies -->
+        <PackageReference Include="NuGet.Packaging" Version="6.12.5" />
+        <PackageReference Include="NuGet.Protocol" Version="6.12.5" />
     </ItemGroup>
 
     <ItemGroup>
