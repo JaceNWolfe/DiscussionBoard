@@ -13,13 +13,16 @@ public class EditPostModel : PageModel
 {
     private readonly PostService _postService;
     private readonly IApplicationAuthorizationService _authorizationService;
+    private readonly ILogger<EditPostModel> _logger;
 
     public EditPostModel(
         PostService postService,
-        IApplicationAuthorizationService authorizationService)
+        IApplicationAuthorizationService authorizationService,
+        ILogger<EditPostModel> logger)
     {
         _postService = postService;
         _authorizationService = authorizationService;
+        _logger = logger;
     }
 
     [BindProperty]
@@ -33,7 +36,14 @@ public class EditPostModel : PageModel
             return NotFound();
 
         if (!await _authorizationService.CanEditAsync(User, post))
+        {
+            _logger.LogWarning(
+                "Post edit denied for post {PostId} in thread {ThreadId}",
+                post.Id,
+                post.DiscussionThreadId);
+
             return Forbid();
+        }
 
         Input = new DiscussionEditViewModel
         {
@@ -52,7 +62,14 @@ public class EditPostModel : PageModel
             return NotFound();
 
         if (!await _authorizationService.CanEditAsync(User, post))
+        {
+            _logger.LogWarning(
+                "Post edit denied for post {PostId} in thread {ThreadId}",
+                post.Id,
+                post.DiscussionThreadId);
+
             return Forbid();
+        }
 
         if (!ModelState.IsValid)
             return Page();

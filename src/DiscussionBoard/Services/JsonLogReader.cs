@@ -30,9 +30,16 @@ namespace DiscussionBoard.Services
             {
                 logFiles = Directory.GetFiles(_logDirectory, "*.json");
             }
+            catch (DirectoryNotFoundException)
+            {
+                return logs;
+            }
             catch (IOException e)
             {
-                _logger.LogError(e, "Could not read log files from {LogDirectory}", _logDirectory);
+                _logger.LogError(
+                    e,
+                    "Could not read log files from {LogDirectory}",
+                    _logDirectory);
                 throw;
             }
 
@@ -40,19 +47,7 @@ namespace DiscussionBoard.Services
             {
                 FileStream? stream = null;
 
-                try
-                {
-                    stream = GetFileStream(logFile);
-                    if (stream == null)
-                    {
-                        continue;
-                    }
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError(e, "Could not read log file {LogFile}", logFile);
-                    continue;
-                }
+                stream = GetFileStream(logFile);
 
                 using StreamReader reader = new(stream);
 
@@ -62,7 +57,12 @@ namespace DiscussionBoard.Services
                 }
                 catch (IOException e)
                 {
-                    _logger.LogError(e, "Could not read log entry in file {LogFile}", logFile);
+                    _logger.LogError(
+                        e,
+                        "Could not read log entry in file {LogFile}",
+                        logFile);
+
+                    throw;
                 }
             }
 

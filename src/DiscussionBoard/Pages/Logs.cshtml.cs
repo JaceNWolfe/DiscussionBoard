@@ -58,7 +58,9 @@ namespace DiscussionBoard.Pages
         {
             try
             {
-                Entries = _logReader.Read().ToList();
+                Entries = _logReader.Read()
+                    .OrderByDescending(entry => entry.Timestamp)
+                    .ToList();
             }
             catch (Exception e)
             {

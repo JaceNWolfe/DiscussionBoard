@@ -3,6 +3,7 @@ using DiscussionBoard.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Testing.Platform.Logging;
 
 namespace DiscussionBoard.Tests.Starter;
 
@@ -64,6 +65,19 @@ public sealed class JsonLogReaderTests : IDisposable
     }
 
     [Fact]
+    public void MissingLogsDirectoryReturnsNoEntries()
+    {
+        // Arrange
+        JsonLogReader reader = CreateReader();
+
+        // Act
+        List<LogEntry> entries = reader.Read().ToList();
+
+        // Assert
+        Assert.Empty(entries);
+    }
+
+    [Fact]
     public void ReadsFileWhileAnotherHandleRemainsOpenForWriting()
     {
         string path = WriteFile("discussionboard-20261009.json",
@@ -103,4 +117,6 @@ public sealed class JsonLogReaderTests : IDisposable
         public string WebRootPath { get; set; } = root;
         public IFileProvider WebRootFileProvider { get; set; } = new NullFileProvider();
     }
+
+
 }

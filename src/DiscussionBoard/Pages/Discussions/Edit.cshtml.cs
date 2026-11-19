@@ -14,14 +14,18 @@ public class ThreadEditModel : PageModel
     public int ForumId { get; private set; }
     private readonly DiscussionThreadService _threadService;
     private readonly IApplicationAuthorizationService _authorizationService;
+    private readonly ILogger<ThreadEditModel> _logger;
 
     public ThreadEditModel(
         DiscussionThreadService threadService,
-        IApplicationAuthorizationService authorizationService)
+        IApplicationAuthorizationService authorizationService,
+        ILogger<ThreadEditModel> logger)
     {
         _threadService = threadService;
         _authorizationService = authorizationService;
+        _logger = logger;
     }
+
 
     [BindProperty]
     public DiscussionEditViewModel Input { get; set; } = new();
@@ -34,7 +38,14 @@ public class ThreadEditModel : PageModel
             return NotFound();
 
         if (!await _authorizationService.CanEditAsync(User, thread))
+        {
+            _logger.LogWarning(
+                "Discussion edit denied for thread {ThreadId} in forum {ForumId}",
+                thread.Id,
+                thread.ForumId);
+
             return Forbid();
+        }
 
         ForumId = thread.ForumId;
 
@@ -55,7 +66,14 @@ public class ThreadEditModel : PageModel
             return NotFound();
 
         if (!await _authorizationService.CanEditAsync(User, thread))
+        {
+            _logger.LogWarning(
+                "Discussion edit denied for thread {ThreadId} in forum {ForumId}",
+                thread.Id,
+                thread.ForumId);
+
             return Forbid();
+        }
 
         ForumId = thread.ForumId;
 

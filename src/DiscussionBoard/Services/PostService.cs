@@ -43,6 +43,11 @@ namespace DiscussionBoard.Services
             {
                 await _context.Posts.AddAsync(post);
                 await _context.SaveChangesAsync();
+
+                _logger.LogInformation(
+                    "Post {PostId} created in discussion thread {ThreadId}",
+                    post.Id,
+                    post.DiscussionThreadId);
             }
             catch (DbUpdateException ex)
             {

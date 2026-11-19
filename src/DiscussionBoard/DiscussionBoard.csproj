@@ -20,6 +20,8 @@
         <!-- Security updates for vulnerable transitive dependencies -->
         <PackageReference Include="NuGet.Packaging" Version="6.12.5" />
         <PackageReference Include="NuGet.Protocol" Version="6.12.5" />
+        <PackageReference Include="Serilog.Settings.Configuration" Version="11.0.0" />
+        <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
     </ItemGroup>
 
     <ItemGroup>

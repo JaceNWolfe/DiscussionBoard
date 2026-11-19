@@ -49,12 +49,18 @@ namespace DiscussionBoard.Services
             {
                 await _context.DiscussionThreads.AddAsync(thread);
                 await _context.SaveChangesAsync();
+
+                _logger.LogInformation(
+                    "Discussion thread {ThreadId} created in forum {ForumId}",
+                    thread.Id,
+                    thread.ForumId);
             }
             catch (DbUpdateException ex)
             {
                 _logger.LogError(
                     ex,
-                    "Failed to add discussion thread.");
+                    "Failed to add discussion thread {ThreadId}.",
+                    thread.Id);
                 throw;
             }
         }

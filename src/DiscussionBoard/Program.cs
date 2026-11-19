@@ -18,16 +18,20 @@ namespace DiscussionBoard
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Get the location of the Logs folder for SeriLog
-            string logPath = Path.Combine(builder.Environment.ContentRootPath, "Logs",  "discussionboard-.json");
+            // Get the location of the Logs folder for Serilog
+            string logPath = Path.Combine(
+                builder.Environment.ContentRootPath,
+                "Logs",
+                "discussionboard-.json");
 
-            builder.Services.AddSerilog((services, configuration) => configuration
-                .WriteTo.Console()
-                .WriteTo.File(
-                    new RenderedCompactJsonFormatter(),
-                    logPath,
-                    rollingInterval: RollingInterval.Day,
-                    shared: true)
+            // Add the calculated log path to configuration
+            builder.Configuration["Serilog:WriteTo:1:Args:configure:0:Args:path"] = logPath;
+
+            // Configure Serilog using appsettings.json
+            builder.Services.AddSerilog((services, configuration) =>
+                configuration
+                    .ReadFrom.Configuration(builder.Configuration)
+                    .ReadFrom.Services(services)
             );
 
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
